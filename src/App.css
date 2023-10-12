@@ -1,0 +1,625 @@
+@import "../node_modules/ol/ol.css";
+
+html, body {
+  margin: 0;
+  height: 100%;
+  font: 1em Arial, sans-serif;
+  caret-color: transparent;
+}
+
+/* Menu layout */
+
+._iamSideMenu {
+	position: absolute;
+	z-index: 100;
+	
+	cursor: pointer;
+	text-align: center;	
+	background-color: white;
+
+	border-radius: 5px;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+._iamSideMenuTile {
+	color: black;
+	padding-right: 4px;
+	padding-left: 4px;
+	padding-top: 4px;
+	padding-bottom: 0px;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+._iamSideMenuTile:hover {
+	border-width: 1px;
+	border-style: solid;	
+	border-radius: 5px;
+}
+
+._iamSideMenuTile:last-of-type {
+	border-bottom-width: 0px;
+}
+
+
+/* Outer Window Layout */
+
+._iamWindow {
+	position: absolute;	
+	display: none;
+	z-index: 100;
+	
+	margin: 10px;	
+	background-color: white;
+	
+	border-radius: 5px;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+._iamWindowTitle {
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	
+	background-color: grey;
+	color: white;
+	font-size: 1.05em;
+	font-weight: bold;
+	
+	padding-top: 3px;
+	padding-left: 5px;
+	padding-bottom: 3px;
+	padding-right: 5px;
+}
+
+._iamWindowClose {
+	cursor: pointer;
+	font-size: 1.2em;
+	float: right;
+}
+
+._iamWindowBody {
+	background-color: white;
+	font-size: 0.95em;
+	margin-top: 10px;
+	margin-left: 15px;
+	margin-right: 15px;
+	margin-bottom: 10px;
+	
+	max-height: 90vh;
+	max-width: 90vw;
+	overflow-x: auto;
+	overflow-y: auto;
+}
+
+._iamWindowHeading {
+	font-size: 1.05em;
+	font-weight: bold;	
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+	margin-top: 10px;
+}
+
+._iamWindowFooter {
+	background-color: white;
+	margin-right: 30px;
+	margin-left: 30px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	text-align: center;
+}
+
+._iamWindowFooterButton {
+	background-color: #EEEEEE;
+	font-size: 0.95em;
+	font-weight: bold;
+	cursor: pointer;
+	
+	margin: 10px;
+	padding: 10px;
+
+	border-radius: 3px;
+	border-width: 1px;
+	border-style: solid;
+}
+
+._iamWindowFooterButton:hover {
+	background-color: grey;
+	color: white;
+}
+
+
+
+/* Inner Window Layout */
+._iamWindowFormFlexible ._iamWindowFormInput:nth-child(2n)  {
+    margin-right: 50px;
+}
+
+._iamWindowForm4col {
+	display: grid;
+	grid-template-columns: max-content min-content max-content min-content;
+	padding: 10px;
+}
+
+._iamWindowForm6col {
+	display: grid;
+	grid-template-columns: max-content min-content max-content min-content max-content min-content;
+	padding: 10px;
+}
+
+._iamWindowForm8col {
+	display: grid;
+	grid-template-columns: max-content min-content max-content min-content max-content min-content max-content min-content;
+	padding: 10px;
+}
+
+._iamWindowFormInput {
+	margin-top: 5px;
+	margin-bottom: 5px;	
+	margin-left: 10px;
+	margin-right: 10px;	
+	font-size: 0.95em;
+	caret-color: black;
+}
+
+._iamWindowForm4col ._iamWindowFormInput:nth-child(2n)  {
+    margin-right: 50px;
+}
+
+._iamWindowForm6col ._iamWindowFormInput:nth-child(2n)  {
+    margin-right: 50px;
+}
+
+._iamWindowForm8col ._iamWindowFormInput:nth-child(2n)  {
+    margin-right: 50px;
+}
+
+
+._iamWindowFormColor {
+	display: grid;
+	grid-template-columns: max-content min-content min-content min-content min-content;	
+	vertical-align: middle;	
+    margin-right: 50px;
+}
+
+._iamWindowFormBracket2Col {
+	display: grid;
+	grid-template-columns: max-content min-content ;		
+	margin-top: 5px;
+	margin-bottom: 5px;		
+	padding: 0px;
+}
+
+._iamWindowFormBracket4Col {
+	display: grid;
+	grid-template-columns: min-content min-content min-content min-content ;		
+	margin-top: 5px;
+	margin-bottom: 5px;		
+	padding: 0px;
+}
+
+
+/* Tabs for feature settings */
+
+._iamTabs {
+	display: grid;
+	grid-template-columns: max-content max-content max-content auto;	
+}
+
+._iamTab_inactive {
+	font-weight: bold;	
+	background-color: lightgrey;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	margin-right: 10px;
+	margin-left: 10px;
+	margin-top: 10px;
+	margin-bottom: 0px;
+	padding: 10px;
+	min-width: 100px;
+}
+
+._iamTab_inactive:hover {
+	background-color: grey;
+	color: white;
+	cursor: pointer;
+}
+
+._iamTab_active {
+	font-weight: bold;	
+	background-color: white;
+	color: black;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	margin-right: 10px;
+	margin-left: 10px;
+	margin-top: 10px;
+	margin-bottom: 0px;
+	padding: 10px;
+	border-width: 1px;
+	border-style: solid;
+	border-bottom-style: none;
+	border-color: lightgrey;
+	min-width: 100px;
+}
+
+._iamTabContent {
+	border-radius: 5px;
+	margin-right: 5px;
+	margin-left: 5px;
+	margin-bottom: 5px;
+	padding: 10px;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+._iamTabContent2 {
+	max-height: 400px;
+	overflow-y: auto;	
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-bottom: 10px;
+
+	font-size: 0.95em;
+	border-radius: 5px;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+/* specific settings dialogues */
+._iamWindowSettingsList {
+	display: grid;
+	grid-template-columns: max-content min-content min-content min-content min-content min-content min-content;	
+	padding-bottom: 5px;
+}
+
+._iamWindowSettingsList_Header {
+	padding-top: 15px;
+	padding-left: 5px;
+	padding-right: 5px;
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+	font-weight: bold;
+}
+
+._iamWindowSettingsList_Content {
+	padding-top: 5px;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+._iamWindowSettingsList_Content_Color {
+	margin-top: 8px;
+	margin-left: 15px;
+	margin-right: 15px;
+	max-width: 10px;
+	max-height: 10px;
+	border-style: solid;
+	border-width: 1px;	
+	border-radius: 2px;
+}
+
+._iamWindowSettingsList_Edit {
+	cursor: pointer;
+}
+
+
+
+/* Time bar */
+
+._iamTimeBar {
+	position: absolute;
+	z-index: 50;
+	bottom: 10px;
+	width: 60%;
+	
+	left: 0; 
+	right: 0; 
+	margin-left: auto; 
+	margin-right: auto; 
+	
+	padding: 4px; 
+	
+	border-radius: 5px;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+	
+	display: grid;
+	grid-template-columns: max-content min-content min-content;
+}
+
+._iamTimeBar_bar {
+	vertical-align: middle;
+	padding-right: 5px;
+}
+
+._iamTimeBar_bar_slider {
+	width: 80%;
+	cursor: grab;
+}
+
+._iamTimeBar_bar_buttons {
+	vertical-align: middle;
+	
+	cursor: pointer;
+	text-align: center;	
+	background-color:white;
+}
+
+._iamTimeBar_button {
+	background-color: white;
+	padding-right: 2px;
+	padding-left: 2px;
+	padding-top: 1px;
+	padding-bottom: 0px;
+	
+	border-width: 1px;
+	border-style: solid;
+	border-radius: 2px 0px 0px 2px
+}
+
+._iamTimeBar_button:last-of-type {
+	border-radius: 0px 2px 2px 0px
+}
+
+._iamTimeBar_button_img {
+	width: 14px;
+	height: 14px;
+}
+
+
+/* display for informations, warning and errors, e.g. after loading of a file */
+
+._iam_info_msg {
+	background-color: rgba(161,232,172,0.8);
+	color: rgba(4,83,17,1.0);
+
+}
+
+._iam_warning_msg {
+	background-color: rgba(256,237,122,0.8);
+	color: rgba(131,103,0,1.0);
+}
+
+._iam_error_msg {
+	background-color: rgba(247,139,120,0.8);
+	color: rgba(173,0,0,1.0);
+}
+
+/* search results */
+
+._iamSearchResults {
+	display: grid;
+	grid-template-columns: max-content max-content max-content;		
+	margin-top: 5px;
+	margin-bottom: 5px;		
+	padding: 0px;	
+}	
+
+._iamSearchResults4Col {
+/*	display: grid;
+	grid-template-columns: max-content max-content max-content max-content;		*/
+	display: grid;
+	grid-auto-flow: row;
+	grid-template-columns: repeat(var(--ItemPerRow), auto);
+	margin-top: 15px;
+	margin-bottom: 15px;		
+	padding: 0px;	
+	max-height: 70vh;
+}
+
+._iamFlexibleDisplay {
+	display: grid;
+	grid-auto-flow: row;
+	grid-template-columns: repeat(var(--ItemPerRow), auto);
+	margin-top: 5px;
+	margin-bottom: 5px;		
+	padding: 0px;	
+	max-height: 200px;
+	overflow-x: auto;
+	overflow-y: auto;
+}		
+
+._iamSearchResult {
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 5px;
+	
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: lightgrey;
+
+	cursor: pointer;
+}
+
+._iamSearchResultHeader {
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 5px;
+	
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: black;
+
+	font-weight: bold;		
+}
+
+._iamSearchResultFooter {
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 5px;
+	
+	border-top-width: 1px;
+	border-top-style: solid;
+	border-top-color: black;
+
+	font-weight: bold;		
+}
+
+/* pop up display with feature information */
+._iamFeatureInfo {
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 1px;
+	padding-bottom: 10px;
+	background-color: rgba(255, 255, 255, 0.9);
+	border-radius: 5px;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}	
+
+._iamFeatureInfoList {
+	display: grid;
+	grid-template-columns: max-content auto;
+}	
+
+._iamFeatureInfoList4Col {
+	display: grid;
+	grid-template-columns: max-content max-content max-content max-content;
+}
+
+._iamFeatureInfoListItem {
+	font-size: 0.8em;
+	padding-top: 1px;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+._iamFeatureInfoHeading {
+	font-size: 0.85em;
+	font-weight: bold;	
+	border-bottom-style: solid;
+	border-bottom-width: 1px;
+	margin-top: 10px;
+}
+
+._iamFeatureInfoHeading2 {
+	font-size: 0.8em;
+	font-weight: bold;	
+	margin-top: 10px;
+}
+/* Individual settings for menus and windows */
+#_iamSideMenuTile_Features {
+	top: 10px;
+	right: 10px;
+}
+
+#_iam_window_load {
+	top: 0px;
+	right: 35px;
+}
+
+#_iam_window_save {
+	top: 27px;
+	right: 35px;	
+}
+
+#_iam_window_settings {
+	top: 55px;
+	right: 35px;
+}
+
+#_iam_window_settings_dialogue {
+	top: 85px;
+	right: 35px;
+	max-width: 90%;	
+}
+
+#_iam_window_text_settings {
+	right: 35px;	
+	top: 115px;
+}
+	
+#_iam_window_timeSettings {
+	top: 85px;
+	right: 35px;
+}
+
+#_iam_window_search {
+	top: 10px;
+	left: 50px;	
+}
+
+#_iam_window_search_featureInfo {
+	z-index: 999;
+	position: absolute;
+	max-width: 70%;
+	display: none;
+}
+
+#_iam_window_table {
+	top: 10px;
+	left: 50px;	
+	max-height: 90%;
+}
+
+#_iam_window_table_featureInfo {
+	z-index: 999;
+	position: absolute;
+	max-width: 70%;
+	display: none;
+}
+
+#_iam_window_chart {
+	top: 10px;
+	left: 50px;
+	width: 90%;
+	height: 90%	
+}
+
+#_iam_window_chart_data {
+	max-height: 150px;
+	overflow-y: auto;
+}
+
+#_iam_window_info_msg {
+	top: 10px;
+	left: 50px;
+	position: absolute;
+	z-index: 999;
+	width: auto;
+	border-radius: 5px;
+	display: none;
+	padding-left: 15px;
+	padding-right: 15px;
+	max-height: 90%;
+	overflow-y: auto;
+	/*box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);*/
+}
+
+
+
+
+/*Open layers specific */
+.map-container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  height: 100vh;
+  width: 100%;
+}
+
+
+
+/* individual window settings */
+#_iamSideMenuTile_MapSettings {
+	right: 10px;
+	top: 240px;
+}
+
+#_iam_window_map_settings {
+	top: 230px;
+	right: 30px;
+}
+
+#_iam_window_map_export {
+	top: 257px;
+	right: 30px;
+}
+
+#_iam_window_map_layerSettings {
+	top: 285px;
+	right: 30px;
+}
+
+#_iam_window_map_featureInfo {
+	z-index: 999;
+	position: absolute;
+	width: auto;
+	display: none;
+}
