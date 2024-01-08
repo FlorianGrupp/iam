@@ -142,7 +142,7 @@ class DataSource {
             let counter = 0;
             for (const olfeature of olfeatures) {
                 counter++;
-                const id = olfeature.get('id')?? (olfeature.get('name')?? 'iam_' + counter);
+                const id = olfeature.get('id')?? (olfeature.get('@id')?? (olfeature.get('name')??  'iam_' + counter));
 
                 if (id !== '_iam_Settings') {
                     const feature = new ExtendedFeature({
@@ -214,7 +214,7 @@ class GeoJSONFeaturesSource extends DataSource {
                 [...Object.keys(props)]
                         .forEach((key) => {
                             //no attributes (starting with '_iam'), only properties; GeoJSON property 'geometry' is also ignored
-                            if (key !== 'geometry' && !key.startsWith('_iam')) {
+                            if (key !== 'geometry' && !key.startsWith('_iamAttributes')) {
                                 if (key !== 'id') {
                                     this._featuresProperties.push(new FeatureProperty({
                                         featureType : feature.getType(),
@@ -413,7 +413,7 @@ function _checkHeader (header, headerTemplate, processResult) {
  * @returns {Array} if no headers in options, a two-dimensional array with the parse items is returned. If headers and headerTemplate specified in options, one dimensional array where each row is represented by an object with keys taken from the headerTemplate
  */
 function _parseCsv(rawData, opts = {}, processResult, checkContent) {
-        try {
+        //try {
             //check delimiter
             if (!opts.delimiter) {
                 opts.delimiter = ',';
@@ -478,13 +478,14 @@ function _parseCsv(rawData, opts = {}, processResult, checkContent) {
             else {
                 return arr;
             }
-        }
+        /*}
         catch (e) {
             processResult.text = IAMTranslatorFactory.getMsg('File has no valid format. No data was loaded.');
             processResult.addDetail(ProcessResult.WARN,e.message);
             return null;            
-        }
+        }*/
 }  
+export {_parseCsv}
 
 /**
  * This class transforms attributes in csv format into the internal format used by the interactive map. The csv-file must have 10 columns named 'feature','featureId','propertyName','propertyValue','fromYear','fromMonth','fromDay','toYear','toMonth','toDay'

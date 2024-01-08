@@ -863,7 +863,7 @@ class FeatureSettings {
         this.levelValue = params.levelValue;
         this.showFeature = params.showFeature;
         this.showText = params.showText;
-        params.textSettings && (this.textSettings = new TextSettings(params.textSettings));
+        params.textSettings ? (this.textSettings = new TextSettings(params.textSettings)): this.textSettings = {};
     }
     
     

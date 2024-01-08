@@ -96,7 +96,8 @@ function IAMImportDialogue(props) {
         {id: 'Features', name: IAMTranslatorFactory.getMsg('Features')},
         {id: 'Properties', name: IAMTranslatorFactory.getMsg('Properties')},
         {id: 'Attributes', name: IAMTranslatorFactory.getMsg('Attributes')},
-        {id: 'Settings', name: IAMTranslatorFactory.getMsg('Settings')}
+        {id: 'Settings', name: IAMTranslatorFactory.getMsg('Settings')},
+        {id: 'OSMEnhancer', name: 'OSM Enhancer'}
     ];
     
     const insertTypes = [
@@ -132,6 +133,7 @@ function IAMImportDialogue(props) {
             (fileType === 'Properties') && props.loadProperties(file, insertType);
             (fileType === 'Attributes') && props.loadAttributes(file, insertType);
             (fileType === 'Settings') && props.loadSettings(file, insertType);
+            (fileType === 'OSMEnhancer') && props.loadOSMEnhancements(file);
  
             clear(true);
         }
@@ -154,14 +156,14 @@ function IAMImportDialogue(props) {
             <IAMWindowTitle windowTitle='Import data' hideCallback={props.hideCallback}/>
             <div className="_iamWindowBody">
                 <form id="_iam_Load_Form" onSubmit={handleSubmit}>
-                    <div className="_iamSearchResults4Col" style={{ "--ItemPerRow": 2 }}>
+                    <div className="_iamWindowForm">
                         <IAMBaseSelect className="_iamWindowFormInput" id='iam_Load_FileType' value={fileType} values={fileTypes} label='File Content' nullOption={false} handleChange={fileTypeChanged}/>
                         <IAMBaseInputFile className="_iamWindowFormInput" id="_iam_Load_FileName" Ref={fileRef} handleChange={(e) => setFile(e.target.files[0])} accept={getAccept()} label='File Name'/>
                         <IAMBaseSelect className="_iamWindowFormInput" id='iam_Load_InsertType' value={insertType} values={insertTypes} label='Existing Data' nullOption={false} handleChange={(e) => setInsertType(parseInt(e.target.value))}/>
                         {addParam}
                     </div>
                     <div className="_iamWindowFooter">
-                        <button className="_iamWindowFooterButton" id="_iam_Load_submit" type="submit">{IAMTranslatorFactory.getMsg("Import")}</button>
+                        <span className="_iamWindowFooterButton" id="_iam_Load_submit" onClick={handleSubmit}>{IAMTranslatorFactory.getMsg("Import")}</span>
                         <span className="_iamWindowFooterButton" id="_iam_Load_cancel" onClick={() => clear(true)}>{IAMTranslatorFactory.getMsg("Cancel")}</span>
                     </div>
                 </form>
@@ -223,7 +225,7 @@ function IAMExportDialogue(props) {
                         {addParam}
                     </div>
                     <div className="_iamWindowFooter">
-                        <button className="_iamWindowFooterButton" id="_iam_Save_submit" type="submit">{IAMTranslatorFactory.getMsg("Export")}</button>
+                        <span className="_iamWindowFooterButton" id="_iam_Save_submit" onClick={handleSubmit}>{IAMTranslatorFactory.getMsg("Export")}</span>
                         <span className="_iamWindowFooterButton" id="_iam_Save_cancel" onClick={props.hideCallback}>{IAMTranslatorFactory.getMsg("Cancel")}</span>
                     </div>
                 </form>
@@ -288,7 +290,6 @@ function IAMSettingsEditDialogue(props) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-
         const params = {
             showFeature: e.target.elements.settings_showFeature.value === ''? undefined : (e.target.elements.settings_showFeature.value === 'true'? true : false), 
             showText: e.target.elements.settings_showText.value === ''? undefined : (e.target.elements.settings_showText.value === 'true'? true : false)            
@@ -451,7 +452,7 @@ function IAMSettingsEditDialogue(props) {
                         </div>
                         }
                         <div className="_iamWindowFooter">
-                            <button className="_iamWindowFooterButton" id="_iam_settings_submit" type="submit">{IAMTranslatorFactory.getMsg('Save')}</button>
+                            <button type="submit" className="_iamWindowFooterButton" id="_iam_settings_submit" >{IAMTranslatorFactory.getMsg('Save')}</button>
                             <span className="_iamWindowFooterButton" id="_iam_settings_textSettings" onClick={props.showTextSettings}>{IAMTranslatorFactory.getMsg('Edit Text Settings')}</span>
                             <span className="_iamWindowFooterButton" id="_iam_settings_cancel" onClick={handleCancel}>{IAMTranslatorFactory.getMsg('Cancel')}</span>
                         </div>
@@ -595,7 +596,7 @@ function IAMTextSettingsEditDialogue(props) {
                         <IAMBaseInputNumber trigger={trigger} id={props.id + '_textRepeat'} value={textSettings&& textSettings.textRepeat? textSettings.textRepeat : ''} numberType="int" maxlength="5"className="_iamWindowFormInput"  label="Text Repeat" />    
                     </div> 
                     <div className="_iamWindowFooter">
-                        <button className="_iamWindowFooterButton" id="_iam_textSettings_submit" type="submit">{IAMTranslatorFactory.getMsg('Save')}</button>
+                        <button type="submit" className="_iamWindowFooterButton" id="_iam_settings_submit" >{IAMTranslatorFactory.getMsg('Save')}</button>
                         <span className="_iamWindowFooterButton" id="_iam_textSettings_cancel" onClick={handleCancel}>{IAMTranslatorFactory.getMsg('Cancel')}</span>
                     </div>
                 </form>
@@ -628,6 +629,7 @@ function IAMTextSettingsEditDialogue(props) {
     
     /* returns text setting of setting selected by user for edit */
     const getCurrentTextSettings = () => {
+console.log(currentSettings);        
         return currentSettings? currentSettings.getTextSettings():undefined;
     };
     
@@ -876,7 +878,7 @@ function IAMTimeSettings(props) {
                     <IAMBaseSlider id='iam_timeSettings_simSpeed' value={simSpeed} className="_iamWindowFormInput" step={100} min={100} max={2000} label="Simulation speed" handleChange={handleSimSpeedChange}/>
                 </div>
                 <div className="_iamWindowFooter">
-                    <button className="_iamWindowFooterButton" id="_iam_MapSettings_submit" type="submit">{IAMTranslatorFactory.getMsg('Save')}</button>
+                    <span className="_iamWindowFooterButton" id="_iam_MapSettings_submit" onClick={handleSubmit}>{IAMTranslatorFactory.getMsg('Save')}</span>
                     <span className="_iamWindowFooterButton" id="_iam_MapSettings_cancel" onClick={handleCancel}>{IAMTranslatorFactory.getMsg('Cancel')}</span>
                 </div>
             </form>

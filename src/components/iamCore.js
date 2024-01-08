@@ -7,6 +7,10 @@ import {IAMOLMap} from './iamOpenLayersImplementation'
 import {IAMSideMenu, IAMImportDialogue, IAMExportDialogue, IAMSettingsDialogue, IAMTimeDialogue, IAMSearchDialogue, IAMTableDialogue, IAMChartDialogue, IAMInfoDialogue} from './iamDialogues';
 import {IAMData, FileLoader, GeoJSONFeaturesSource, KMLFeaturesSource, FeatureAttributesCSVDataSource, FeaturePropertiesCSVDataSource, FeatureSettingsJSONDataSource, ProcessResult} from './iamDataCollections'
 import {download, IAMTranslatorFactory} from './iamBase'
+import {OSMEnhancer} from './iamOSMLoader';
+
+import {unzipRaw} from 'unzipit';
+
 
 /**
  * Main (controller) class. Invokes the Map implementation and all dialogues, controls all events. 
@@ -91,11 +95,28 @@ function InteractiveMap(props) {
             let datasource = null;
             const pr = new ProcessResult(ProcessResult.INFO,IAMTranslatorFactory.getMsg('Successfully loaded ') + IAMTranslatorFactory.getMsg('features from GeoJSON file'));
             
+            let dataContent = null;
+            let dataType = 'json';
+            
             if ((file.name && file.name.endsWith('.kml')) || (file.endsWith && file.endsWith('.kml'))) {
-                datasource = new KMLFeaturesSource(fl.loadData(),pr);
+                dataType = 'kml';
+            }
+            else if ((file.name && file.name.endsWith('.zip')) || (file.endsWith && file.endsWith('.zip'))) {
+                dataType = 'zip';
+            }
+            
+            if (dataType !== 'zip') {
+                dataContent = fl.loadData();
             }
             else {
-                datasource = new GeoJSONFeaturesSource(fl.loadData(),pr);
+                dataContent = await unzipGeoJSON(file);
+            }
+            
+            if ((file.name && file.name.endsWith('.kml')) || (file.endsWith && file.endsWith('.kml'))) {
+                datasource = new KMLFeaturesSource(dataContent,pr);
+            }
+            else {
+                datasource = new GeoJSONFeaturesSource(dataContent,pr);
             }       
             
             const db = IAMData.getDatabase();
@@ -122,6 +143,17 @@ function InteractiveMap(props) {
         }
     };
     
+    const unzipGeoJSON = async (file_url) => {
+
+        const unzipped = await unzipRaw(file_url);
+        let content = '';
+        unzipped.entries.forEach((entry) => {
+            content = entry.text();
+        });
+          
+        return content;
+    };
+    
     /**
      * loads features attributes from the specified csv file and displays them on the map
      * @param {File|String} fileName csv file. Either as instance of file or as fully qualified file path and name
@@ -129,7 +161,7 @@ function InteractiveMap(props) {
      * @returns {undefined}
      */
     const loadFeatureAttributes = async (fileName, insertType) => {
-        try {
+        //try {
             const fl = new FileLoader(fileName);
             await fl.init();
             const pr = new ProcessResult(ProcessResult.INFO,IAMTranslatorFactory.getMsg('Successfully loaded ') + IAMTranslatorFactory.getMsg('feature attributess from csv file'));
@@ -139,10 +171,10 @@ function InteractiveMap(props) {
             updateMap();
             showMsg(pr);             
             setToggleTimeBar(true);
-        }
+        /*}
         catch (e) {
             showMsg({status:ProcessResult.ERROR, text: IAMTranslatorFactory.getMsg('Unable to load ') + IAMTranslatorFactory.getMsg('feature attributess from csv file') + + IAMTranslatorFactory.getMsg(' due to ') + e.name, details: [e.message]});
-        }
+        }*/
     };
     
     /**
@@ -209,6 +241,12 @@ function InteractiveMap(props) {
             showMsg({status:ProcessResult.ERROR, text: IAMTranslatorFactory.getMsg('Unable to save ') + IAMTranslatorFactory.getMsg(' due to ') + e.name, details: [e.message]});
         }
     };
+    
+    const loadOSMEnhancements = (file) => {
+        const osm = new OSMEnhancer(file);
+        osm.loadOSM();
+        initMap();
+   };
     
     /**
      * Saves all settings (features and map) in JSON file. It will automatically start a download
@@ -359,6 +397,7 @@ function InteractiveMap(props) {
                     loadAttributes={loadFeatureAttributes}
                     loadProperties={loadFeatureProperties}
                     loadSettings={loadSettings}
+                    loadOSMEnhancements={loadOSMEnhancements}
                 />
  
                  <IAMExportDialogue

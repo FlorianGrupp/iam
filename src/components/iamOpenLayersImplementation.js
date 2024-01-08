@@ -7,7 +7,7 @@ import html2canvas from 'html2canvas';
 import {Map as OLMap, View, Feature} from 'ol';
 import {Tile as TileLayer, Vector as VectorLayer} from 'ol/layer';
 import {fromLonLat} from 'ol/proj';
-import {OSM,Stamen,Vector, XYZ} from 'ol/source';
+import {OSM,Stamen,Vector, XYZ, BingMaps} from 'ol/source';
 import {ScaleLine} from 'ol/control';
 /*  This file provides the Open Layers implementation of the map */
 
@@ -177,32 +177,47 @@ function IAMOLMapExportDialogue(props) {
     
     //exports the map using the given file name, file type (jpeg or png) and export options (useCORS, allowTaint). For some layers and some export options an export might not be possible or will only produce exports without the base layer in the background
     const exportMap = (e) => {
-        e.preventDefault();
-        
-        const exportOptions = {
-          useCORS: useCORS,
-          allowTaint: allowTaint,
-          ignoreElements: function (element) {
-            const className = element.className || '';
-            return (
-              className.includes('ol-control') &&
-              !className.includes('ol-scale') &&
-              (!className.includes('ol-attribution') /*||
-                !className.includes('ol-uncollapsible')*/)
-            );
-          }
-        };
-        
-        props.mapRef.once('rendercomplete', function() {
-            html2canvas(props.mapRef.getViewport(), exportOptions).then(function (canvas) {
-                download(
-                    canvas.toDataURL('image/' + exportImageType),
-                    exportFileName + '.' + exportImageType
+        try {
+            e.preventDefault();
+
+            const exportOptions = {
+              useCORS: useCORS,
+              allowTaint: allowTaint,
+              ignoreElements: function (element) {
+                const className = element.className || '';
+                return (
+                  className.includes('ol-control') &&
+                  !className.includes('ol-scale') &&
+                  (!className.includes('ol-attribution') /*||
+                    !className.includes('ol-uncollapsible')*/)
                 );
+              }
+            };
+
+            props.mapRef.once('rendercomplete', function() {
+                try {
+                    html2canvas(props.mapRef.getViewport(), exportOptions).then(function (canvas) {
+                        try {
+                            download(
+                                canvas.toDataURL('image/' + exportImageType),
+                                exportFileName + '.' + exportImageType
+                            );
+                        }
+                        catch (e) {
+                            alert('Image export not possible due to ' + e);                   
+                        }
+                    });
+                }
+                catch (e) {
+                    alert('Image export not possible due to ' + e);                   
+                }
             });
-        });
-        props.mapRef.renderSync(); 
-        props.hideCallback();
+            props.mapRef.renderSync(); 
+            props.hideCallback();           
+        }
+        catch (e) {
+            alert('Image export not possible due to ' + e);
+        }
     };
     
     const fileTypes = [{name: 'JPEG', id: 'jpeg'},{name: 'PNG', id: 'png'}];
@@ -220,7 +235,7 @@ function IAMOLMapExportDialogue(props) {
                     </div>
                 </div>
                 <div className="_iamWindowFooter">
-                    <button className="_iamWindowFooterButton" id="_iam_MapExport_submit" type="submit">{IAMTranslatorFactory.getMsg('Export')}</button>
+                    <span className="_iamWindowFooterButton" id="_iam_MapExport_submit" onClick={exportMap}>{IAMTranslatorFactory.getMsg('Export')}</span>
                     <span className="_iamWindowFooterButton" id="_iam_MapExport_cancel" onClick={props.hideCallback}>{IAMTranslatorFactory.getMsg('Cancel')}</span>
                 </div>
             </form>
@@ -336,7 +351,7 @@ function IAMOLMapLayerSettingsDialogue(props) {
                         <IAMBaseSelect id="_iam_MapLayerSettings_crossOrigin" value={crossOrigin} values={['anonymous','use-credentials']} className="_iamWindowFormInput" label="CrossOrigin" nullOption={true} handleChange={(e) => setCrossOrigin(e.target.value)} />
                     </div>
                     <div className="_iamWindowFooter">
-                        <button className="_iamWindowFooterButton" id="_iam_MapLayerSettings_add" type="submit">{IAMTranslatorFactory.getMsg('Add')}</button>
+                        <span className="_iamWindowFooterButton" id="_iam_MapLayerSettings_add" onClick={addLayer}>{IAMTranslatorFactory.getMsg('Add')}</span>
                     </div>              
                 </form>
             </div>
@@ -383,6 +398,15 @@ const standardOlLayers = new Map();
 const getOlLayer = (layer) => {
     if (layer.type === 'standard') {
         return standardOlLayers.get(layer.id);
+    }
+    else if (layer.sourceURL === 'Bing') {
+        return new TileLayer({
+            preload: Infinity,
+            source: new BingMaps({
+              key: layer.key,
+              imagerySet: 'Aerial'
+            })
+        });
     }
     else {
         return new TileLayer({
@@ -451,7 +475,7 @@ function IAMOLMap(props) {
             opacity: 0.8,
             name: 'Open Street Maps'
         },
-        {
+        /*{
             id: 'stamen_terrain',
             type: 'standard',
             use: false,
@@ -464,7 +488,7 @@ function IAMOLMap(props) {
             use: false,
             opacity: 0.8,
             name: 'Stamen Toner'
-        },
+        },*/
         {
             id: 'orm', 
             type: 'standard',
